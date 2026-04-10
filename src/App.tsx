@@ -160,9 +160,9 @@ function RouterMarker({ node, index, showLinks }: { node: RouterNode; index: num
               <Line
                 points={[node.position, pc.position]}
                 color="#818cf8"
-                lineWidth={0.5}
+                lineWidth={2.5}
                 transparent
-                opacity={0.4}
+                opacity={0.8}
               />
               <Billboard
                 position={node.position.clone().lerp(pc.position, 0.5).add(node.position.clone().normalize().multiplyScalar(0.05))}
