@@ -35,7 +35,11 @@ import {
   Monitor,
   Play,
   Terminal,
-  ArrowRight
+  ArrowRight,
+  ChevronDown,
+  Globe as GlobeIcon,
+  Cpu,
+  ShieldCheck
 } from 'lucide-react';
 import * as THREE from 'three';
 
@@ -1069,7 +1073,7 @@ function LSDBModal({
   );
 }
 
-function Header({ theme, onToggleTheme }: { theme: 'night' | 'day'; onToggleTheme: () => void }) {
+function Header({ theme, onToggleTheme, onBackToIntro }: { theme: 'night' | 'day'; onToggleTheme: () => void; onBackToIntro: () => void }) {
   return (
     <header className="fixed top-0 left-0 w-full z-40 px-6 py-8 flex justify-between items-center pointer-events-none">
       <div className="flex items-center gap-3 pointer-events-auto">
@@ -1080,6 +1084,14 @@ function Header({ theme, onToggleTheme }: { theme: 'night' | 'day'; onToggleThem
       </div>
 
       <div className="flex items-center gap-4 pointer-events-auto">
+        <button 
+          onClick={onBackToIntro}
+          className="p-3 bg-neutral-900/80 backdrop-blur-md border border-white/5 rounded-xl text-neutral-400 hover:text-white transition-colors flex items-center gap-2"
+          title="Back to Introduction"
+        >
+          <Info className="w-5 h-5" />
+          <span className="text-xs font-bold uppercase tracking-widest">Intro</span>
+        </button>
         <button 
           onClick={onToggleTheme}
           className="p-3 bg-neutral-900/80 backdrop-blur-md border border-white/5 rounded-xl text-neutral-400 hover:text-white transition-colors flex items-center gap-2"
@@ -1092,6 +1104,118 @@ function Header({ theme, onToggleTheme }: { theme: 'night' | 'day'; onToggleThem
   );
 }
 
+function LandingSection({ onEnter }: { onEnter: () => void }) {
+  return (
+    <motion.div 
+      initial={{ y: 0 }}
+      exit={{ y: '-100%' }}
+      transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+      className="fixed inset-0 z-[100] bg-neutral-950 flex flex-col overflow-y-auto overflow-x-hidden selection:bg-indigo-500/30"
+    >
+      {/* Hero Section */}
+      <section className="min-h-screen flex flex-col items-center justify-center relative px-6 py-20">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-600/10 blur-[120px] rounded-full" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-600/10 blur-[120px] rounded-full" />
+        </div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="text-center max-w-4xl z-10"
+        >
+          <h1 className="text-6xl md:text-8xl font-display font-black text-white mb-8 tracking-tighter">
+            OSPF <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-blue-400">Global</span> Visualizer
+          </h1>
+          <p className="text-xl md:text-2xl text-neutral-400 mb-12 leading-relaxed font-light">
+            Experience the dynamics of Open Shortest Path First (OSPF) routing through a real-time, interactive 3D global topology simulation.
+          </p>
+        </motion.div>
+      </section>
+
+      {/* Content Sections */}
+      <section className="max-w-6xl mx-auto px-6 py-32 grid md:grid-cols-2 gap-20 items-center border-t border-white/5">
+        <div className="space-y-8">
+          <h2 className="text-4xl font-display font-bold text-white">What is OSPF?</h2>
+          <p className="text-lg text-neutral-400 leading-relaxed">
+            Open Shortest Path First (OSPF) is a powerful link-state routing protocol designed for large-scale enterprise networks. It operates by maintaining a complete map of the network topology, allowing routers to make intelligent, independent routing decisions.
+          </p>
+          <div className="grid grid-cols-2 gap-6">
+            <div className="p-6 rounded-2xl bg-neutral-900/50 border border-white/5">
+              <Zap className="w-8 h-8 text-indigo-400 mb-4" />
+              <h3 className="text-white font-bold mb-2">Fast Convergence</h3>
+              <p className="text-sm text-neutral-500">Instantly reacts to topology changes and link failures.</p>
+            </div>
+            <div className="p-6 rounded-2xl bg-neutral-900/50 border border-white/5">
+              <Network className="w-8 h-8 text-blue-400 mb-4" />
+              <h3 className="text-white font-bold mb-2">Scalability</h3>
+              <p className="text-sm text-neutral-500">Efficiently handles complex networks with hierarchical areas.</p>
+            </div>
+          </div>
+        </div>
+        <div className="relative aspect-square rounded-3xl bg-gradient-to-br from-indigo-600/20 to-blue-600/20 border border-white/10 overflow-hidden flex items-center justify-center">
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20" />
+          <GlobeIcon className="w-48 h-48 text-indigo-500/40 animate-pulse" />
+        </div>
+      </section>
+
+      <section className="bg-neutral-900/30 py-32">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="text-4xl font-display font-bold text-white text-center mb-20">How It Works</h2>
+          <div className="grid md:grid-cols-4 gap-8">
+            {[
+              { title: "Neighbor Discovery", desc: "Routers identify peers using Hello packets to establish adjacencies.", icon: <Plus className="text-indigo-400" /> },
+              { title: "LSA Exchange", desc: "Link State Advertisements are flooded throughout the network area.", icon: <Share2 className="text-blue-400" /> },
+              { title: "LSDB Sync", desc: "Every router builds an identical map of the entire network topology.", icon: <Database className="text-indigo-400" /> },
+              { title: "SPF Calculation", desc: "Dijkstra's algorithm runs to find the mathematically shortest path.", icon: <Cpu className="text-blue-400" /> }
+            ].map((step, i) => (
+              <div key={i} className="relative p-8 rounded-3xl bg-neutral-900 border border-white/5 hover:border-indigo-500/50 transition-all group">
+                <div className="w-12 h-12 rounded-xl bg-neutral-800 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  {step.icon}
+                </div>
+                <h3 className="text-xl font-bold text-white mb-4">{step.title}</h3>
+                <p className="text-sm text-neutral-500 leading-relaxed">{step.desc}</p>
+                <div className="absolute -top-4 -right-4 w-12 h-12 rounded-full bg-neutral-900 border border-white/5 flex items-center justify-center text-xs font-bold text-neutral-600">
+                  0{i + 1}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-6xl mx-auto px-6 py-32 text-center">
+        <h2 className="text-4xl font-display font-bold text-white mb-8">Ready to Simulate?</h2>
+        <p className="text-xl text-neutral-400 mb-12 max-w-2xl mx-auto">
+          Dive into the interactive environment. Place nodes, configure costs, and watch the OSPF protocol optimize your global network in real-time.
+        </p>
+        <button 
+          onClick={onEnter}
+          className="flex flex-col items-center gap-6 mx-auto group cursor-pointer"
+        >
+          <span className="text-sm font-display font-bold uppercase tracking-[0.4em] text-indigo-400 group-hover:text-white transition-all duration-500">
+            Explore Network
+          </span>
+          <motion.div
+            animate={{ y: [0, 12, 0] }}
+            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+            className="text-neutral-600 group-hover:text-indigo-500 transition-colors duration-500"
+          >
+            <ChevronDown className="w-10 h-10" strokeWidth={1} />
+          </motion.div>
+        </button>
+      </section>
+
+      <footer className="py-12 border-t border-white/5 text-center">
+        <p className="text-neutral-600 text-sm font-medium tracking-widest uppercase">
+          OSPF Visualizer &copy; 2026
+        </p>
+      </footer>
+    </motion.div>
+  );
+}
+
 export default function App() {
   const [nodes, setNodes] = useState<RouterNode[]>([]);
   const [links, setLinks] = useState<NetworkLink[]>([]);
@@ -1100,6 +1224,7 @@ export default function App() {
   const [isLSDBOpen, setIsLSDBOpen] = useState(false);
   const [activeRouterForPC, setActiveRouterForPC] = useState<string | null>(null);
   const [isSimulationModalOpen, setIsSimulationModalOpen] = useState(false);
+  const [showLanding, setShowLanding] = useState(true);
   const [simulation, setSimulation] = useState<SimulationState>({
     isActive: false,
     sourceIp: '',
@@ -1321,6 +1446,10 @@ export default function App() {
 
   return (
     <main className="relative w-full h-screen bg-neutral-950 font-sans selection:bg-indigo-500/30 overflow-hidden">
+      <AnimatePresence>
+        {showLanding && <LandingSection onEnter={() => setShowLanding(false)} />}
+      </AnimatePresence>
+
       {/* 3D Scene */}
       <div className="absolute inset-0 z-0">
         <Canvas shadows dpr={[1, 2]}>
@@ -1376,7 +1505,11 @@ export default function App() {
       </div>
 
       {/* UI Overlay */}
-      <Header theme={theme} onToggleTheme={() => setTheme(theme === 'night' ? 'day' : 'night')} />
+      <Header 
+        theme={theme} 
+        onToggleTheme={() => setTheme(theme === 'night' ? 'day' : 'night')} 
+        onBackToIntro={() => setShowLanding(true)}
+      />
       <Sidebar 
         nodes={nodes} 
         onRemoveNode={removeNode} 
