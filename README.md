@@ -56,3 +56,26 @@ git clone https://github.com/your-username/ospf-globe-explorer.git
 cd ospf-globe-explorer
 npm install
 npm run dev
+```
+
+---
+
+## 📸 Screenshots
+
+### 🏠 Landing Page
+![Landing Page](https://storage.googleapis.com/test-api-studio-build-artifacts/670546655399/670546655399_1744522473464_0.png)
+
+### 📂 Cisco Packet Tracer Resource
+![Resource Section](https://storage.googleapis.com/test-api-studio-build-artifacts/670546655399/670546655399_1744522473464_1.png)
+
+### 🌍 Global Topology
+![Global View](https://storage.googleapis.com/test-api-studio-build-artifacts/670546655399/670546655399_1744522473464_2.png)
+
+### 🧠 LSDB & SPF Calculations
+![LSDB Modal](https://storage.googleapis.com/test-api-studio-build-artifacts/670546655399/670546655399_1744522473464_3.png)
+
+### ⚡ Network Simulation
+![Simulation Modal](https://storage.googleapis.com/test-api-studio-build-artifacts/670546655399/670546655399_1744522473464_4.png)
+
+### 🚀 Tracert Output
+![Tracert Output](https://storage.googleapis.com/test-api-studio-build-artifacts/670546655399/670546655399_1744522473464_5.png)
