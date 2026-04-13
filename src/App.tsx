@@ -28,6 +28,7 @@ import {
   Zap,
   X,
   Database,
+  Menu,
   Sun,
   Moon,
   Share2,
@@ -39,7 +40,9 @@ import {
   ChevronDown,
   Globe as GlobeIcon,
   Cpu,
-  ShieldCheck
+  ShieldCheck,
+  ExternalLink,
+  Download
 } from 'lucide-react';
 import * as THREE from 'three';
 
@@ -423,28 +426,34 @@ function Sidebar({
   onRemoveNode, 
   onToggleNode,
   onManagePCs,
-  onOpenCostTable
+  onOpenCostTable,
+  isOpen,
+  onClose
 }: { 
   nodes: RouterNode[]; 
-  onRemoveNode: (id: string) => void;
+  onRemoveNode: (id: string) => void; 
   onToggleNode: (id: string) => void;
   onManagePCs: (id: string) => void;
   onOpenCostTable: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 }) {
   return (
     <motion.div 
-      initial={{ x: -300 }}
+      initial={{ x: -400 }}
       animate={{ x: 0 }}
-      className="fixed left-6 top-24 bottom-6 w-72 bg-neutral-900/80 backdrop-blur-xl border border-white/5 rounded-3xl z-30 flex flex-col overflow-hidden"
+      className={`fixed left-0 lg:left-6 top-0 lg:top-24 bottom-0 lg:bottom-6 w-full lg:w-72 bg-neutral-950 lg:bg-neutral-900/80 backdrop-blur-xl border-r lg:border border-white/5 lg:rounded-3xl z-[60] lg:z-30 flex flex-col overflow-hidden transition-transform duration-300 lg:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
     >
-      <div className="p-6 border-b border-white/5">
-        <div className="flex items-center gap-3 mb-2">
+      <div className="p-6 border-b border-white/5 flex justify-between items-center">
+        <div className="flex items-center gap-3">
           <div className="p-2 bg-indigo-500/20 rounded-lg text-indigo-400">
             <Network className="w-5 h-5" />
           </div>
           <h2 className="font-display font-bold text-xl text-white">OSPF Topology</h2>
         </div>
-        <p className="text-xs text-neutral-500">Manage your network nodes and costs.</p>
+        <button onClick={onClose} className="lg:hidden p-2 text-neutral-500 hover:text-white">
+          <X className="w-6 h-6" />
+        </button>
       </div>
 
       <div className="p-4">
@@ -517,7 +526,7 @@ function Sidebar({
                     Status: {node.status}
                   </span>
                 </div>
-                <span className="text-[10px] text-neutral-600 font-bold">PCs: {node.pcs.length}</span>
+                <span className="text-[10px] text-blue-400 font-bold">PCs: {node.pcs.length}</span>
               </div>
             </motion.div>
           ))
@@ -556,12 +565,12 @@ function PCManagerModal({
       <motion.div 
         initial={{ scale: 0.9, y: 20 }}
         animate={{ scale: 1, y: 0 }}
-        className="bg-neutral-900 border border-white/10 rounded-3xl w-full max-w-2xl max-h-[70vh] flex flex-col overflow-hidden shadow-2xl"
+        className="bg-neutral-900 border border-white/10 rounded-3xl w-full max-w-2xl max-h-[90vh] lg:max-h-[70vh] flex flex-col overflow-hidden shadow-2xl mx-4"
       >
-        <div className="p-6 border-b border-white/10 flex justify-between items-center">
+        <div className="p-4 md:p-6 border-b border-white/10 flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-display font-bold text-white">Manage PCs: {router.name}</h2>
-            <p className="text-sm text-neutral-500">Configure local network devices and their costs.</p>
+            <h2 className="text-xl md:text-2xl font-display font-bold text-white">Manage PCs: {router.name}</h2>
+            <p className="text-xs md:text-sm text-neutral-500">Configure local network devices and their costs.</p>
           </div>
           <button 
             onClick={onClose}
@@ -571,7 +580,7 @@ function PCManagerModal({
           </button>
         </div>
 
-        <div className="flex-1 overflow-auto p-6">
+        <div className="flex-1 overflow-auto p-4 md:p-6">
           {router.pcs.length === 0 ? (
             <div className="h-48 flex flex-col items-center justify-center text-neutral-500 border border-white/5 rounded-2xl bg-white/[0.02]">
               <Monitor className="w-10 h-10 mb-3 opacity-20" />
@@ -580,9 +589,9 @@ function PCManagerModal({
           ) : (
             <div className="space-y-4">
               {router.pcs.map((pc, idx) => (
-                <div key={pc.id} className="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-2xl">
+                <div key={pc.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-white/5 border border-white/5 rounded-2xl gap-4">
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-indigo-500/10 rounded-xl flex items-center justify-center text-indigo-400 font-bold">
+                    <div className="w-10 h-10 bg-indigo-500/10 rounded-xl flex items-center justify-center text-indigo-400 font-bold shrink-0">
                       {idx + 1}
                     </div>
                     <div>
@@ -590,7 +599,7 @@ function PCManagerModal({
                       <p className="text-[10px] text-neutral-500 font-mono uppercase tracking-tighter">Device ID: {pc.id.slice(0, 6)}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-between sm:justify-end gap-4">
                     <div className="flex flex-col items-end">
                       <span className="text-[10px] text-neutral-500 font-bold uppercase mb-1">Link Cost</span>
                       <input 
@@ -702,10 +711,10 @@ function SimulationModal({
       <motion.div 
         initial={{ scale: 0.9, y: 20 }}
         animate={{ scale: 1, y: 0 }}
-        className="bg-neutral-900 border border-white/10 rounded-3xl w-full max-w-md p-8 shadow-2xl"
+        className="bg-neutral-900 border border-white/10 rounded-3xl w-full max-w-md p-6 md:p-8 shadow-2xl mx-4"
       >
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-display font-bold text-white">Network Simulation</h2>
+          <h2 className="text-xl md:text-2xl font-display font-bold text-white">Network Simulation</h2>
           <button onClick={onClose} className="text-neutral-500 hover:text-white"><X /></button>
         </div>
 
@@ -762,7 +771,7 @@ function TracertPanel({ logs, onClose }: { logs: string[]; onClose: () => void }
       initial={{ x: 400 }}
       animate={{ x: 0 }}
       exit={{ x: 400 }}
-      className="fixed right-6 top-24 bottom-6 w-72 bg-neutral-900/90 backdrop-blur-xl border border-white/10 rounded-3xl z-50 flex flex-col overflow-hidden shadow-2xl"
+      className="fixed right-0 md:right-6 top-0 md:top-24 bottom-0 md:bottom-6 w-full md:w-72 bg-neutral-950 md:bg-neutral-900/90 backdrop-blur-xl border-l md:border border-white/10 md:rounded-3xl z-[70] md:z-50 flex flex-col overflow-hidden shadow-2xl"
     >
       <div className="p-4 border-b border-white/10 flex justify-between items-center">
         <div className="flex items-center gap-2">
@@ -809,12 +818,12 @@ function CostTableModal({
       <motion.div 
         initial={{ scale: 0.9, y: 20 }}
         animate={{ scale: 1, y: 0 }}
-        className="bg-neutral-900 border border-white/10 rounded-3xl w-full max-w-4xl max-h-[80vh] flex flex-col overflow-hidden shadow-2xl"
+        className="bg-neutral-900 border border-white/10 rounded-3xl w-full max-w-4xl max-h-[90vh] lg:max-h-[80vh] flex flex-col overflow-hidden shadow-2xl mx-4"
       >
-        <div className="p-6 border-b border-white/10 flex justify-between items-center">
+        <div className="p-4 md:p-6 border-b border-white/10 flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-display font-bold text-white">OSPF Cost Matrix</h2>
-            <p className="text-sm text-neutral-500">Define the OSPF cost between router nodes.</p>
+            <h2 className="text-xl md:text-2xl font-display font-bold text-white">OSPF Cost Matrix</h2>
+            <p className="text-xs md:text-sm text-neutral-500">Define the OSPF cost between router nodes.</p>
           </div>
           <button 
             onClick={onClose}
@@ -824,53 +833,55 @@ function CostTableModal({
           </button>
         </div>
 
-        <div className="flex-1 overflow-auto p-6">
+        <div className="flex-1 overflow-auto p-4 md:p-6">
           {nodes.length < 2 ? (
             <div className="h-64 flex flex-col items-center justify-center text-neutral-500">
               <Info className="w-12 h-12 mb-4 opacity-20" />
               <p>Deploy at least 2 nodes to configure links.</p>
             </div>
           ) : (
-            <table className="w-full border-collapse">
-              <thead>
-                <tr>
-                  <th className="p-3 text-left text-xs font-bold text-neutral-500 uppercase tracking-widest border-b border-white/5">From \ To</th>
-                  {nodes.map(node => (
-                    <th key={node.id} className="p-3 text-left text-xs font-bold text-neutral-500 uppercase tracking-widest border-b border-white/5">
-                      {node.name}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {nodes.map(fromNode => (
-                  <tr key={fromNode.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
-                    <td className="p-3 text-sm font-bold text-indigo-400">{fromNode.name}</td>
-                    {nodes.map(toNode => {
-                      if (fromNode.id === toNode.id) {
-                        return <td key={toNode.id} className="p-3 text-neutral-700 bg-neutral-950/50 text-center">-</td>;
-                      }
-                      const link = links.find(l => 
-                        (l.fromId === fromNode.id && l.toId === toNode.id) ||
-                        (l.fromId === toNode.id && l.toId === fromNode.id)
-                      );
-                      return (
-                        <td key={toNode.id} className="p-2">
-                          <input 
-                            type="number"
-                            min="1"
-                            value={link?.cost || ''}
-                            placeholder="∞"
-                            onChange={(e) => onUpdateLink(fromNode.id, toNode.id, parseInt(e.target.value) || 0)}
-                            className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors"
-                          />
-                        </td>
-                      );
-                    })}
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse min-w-[600px]">
+                <thead>
+                  <tr>
+                    <th className="p-3 text-left text-xs font-bold text-neutral-500 uppercase tracking-widest border-b border-white/5">From \ To</th>
+                    {nodes.map(node => (
+                      <th key={node.id} className="p-3 text-left text-xs font-bold text-neutral-500 uppercase tracking-widest border-b border-white/5">
+                        {node.name}
+                      </th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {nodes.map(fromNode => (
+                    <tr key={fromNode.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                      <td className="p-3 text-sm font-bold text-indigo-400">{fromNode.name}</td>
+                      {nodes.map(toNode => {
+                        if (fromNode.id === toNode.id) {
+                          return <td key={toNode.id} className="p-3 text-neutral-700 bg-neutral-950/50 text-center">-</td>;
+                        }
+                        const link = links.find(l => 
+                          (l.fromId === fromNode.id && l.toId === toNode.id) ||
+                          (l.fromId === toNode.id && l.toId === fromNode.id)
+                        );
+                        return (
+                          <td key={toNode.id} className="p-2">
+                            <input 
+                              type="number"
+                              min="1"
+                              value={link?.cost || ''}
+                              placeholder="∞"
+                              onChange={(e) => onUpdateLink(fromNode.id, toNode.id, parseInt(e.target.value) || 0)}
+                              className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors"
+                            />
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
 
@@ -968,12 +979,12 @@ function LSDBModal({
       <motion.div 
         initial={{ scale: 0.9, y: 20 }}
         animate={{ scale: 1, y: 0 }}
-        className="bg-neutral-900 border border-white/10 rounded-3xl w-full max-w-5xl max-h-[85vh] flex flex-col overflow-hidden shadow-2xl"
+        className="bg-neutral-900 border border-white/10 rounded-3xl w-full max-w-5xl max-h-[90vh] lg:max-h-[85vh] flex flex-col overflow-hidden shadow-2xl mx-4"
       >
-        <div className="p-6 border-b border-white/10 flex justify-between items-center">
+        <div className="p-4 md:p-6 border-b border-white/10 flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-display font-bold text-white">Link State Database (LSDB)</h2>
-            <p className="text-sm text-neutral-500">Current Link State Advertisements and SPF Calculations.</p>
+            <h2 className="text-xl md:text-2xl font-display font-bold text-white">Link State Database (LSDB)</h2>
+            <p className="text-xs md:text-sm text-neutral-500">Current Link State Advertisements and SPF Calculations.</p>
           </div>
           <button 
             onClick={onClose}
@@ -983,7 +994,7 @@ function LSDBModal({
           </button>
         </div>
 
-        <div className="flex-1 overflow-auto p-6 space-y-8">
+        <div className="flex-1 overflow-auto p-4 md:p-6 space-y-8">
           {/* LSA Section */}
           <section>
             <h3 className="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-4">Link State Advertisements</h3>
@@ -993,8 +1004,9 @@ function LSDBModal({
                 <p className="text-sm">No LSAs found.</p>
               </div>
             ) : (
-              <table className="w-full border-collapse">
-                <thead>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse min-w-[600px]">
+                  <thead>
                   <tr>
                     <th className="p-3 text-left text-xs font-bold text-neutral-500 uppercase tracking-widest border-b border-white/5">#</th>
                     <th className="p-3 text-left text-xs font-bold text-neutral-500 uppercase tracking-widest border-b border-white/5">Link ID</th>
@@ -1019,8 +1031,9 @@ function LSDBModal({
                   })}
                 </tbody>
               </table>
-            )}
-          </section>
+            </div>
+          )}
+        </section>
 
           {/* SPF Section */}
           <section>
@@ -1043,28 +1056,30 @@ function LSDBModal({
             {nodes.length === 0 ? (
               <p className="text-sm text-neutral-500 text-center py-8">Deploy nodes to calculate SPF.</p>
             ) : (
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr>
-                    <th className="p-3 text-left text-xs font-bold text-neutral-500 uppercase tracking-widest border-b border-white/5">Destination</th>
-                    <th className="p-3 text-left text-xs font-bold text-neutral-500 uppercase tracking-widest border-b border-white/5">OSPF Path</th>
-                    <th className="p-3 text-left text-xs font-bold text-neutral-500 uppercase tracking-widest border-b border-white/5 text-right">Total Cost</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {nodes.map(node => (
-                    <tr key={node.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
-                      <td className="p-3 text-sm text-white font-bold">{node.name}</td>
-                      <td className="p-3 text-xs font-medium text-neutral-400">
-                        {getPath(node.id)}
-                      </td>
-                      <td className="p-3 text-sm text-indigo-400 font-bold text-right">
-                        {spfResults?.distances[node.id] === Infinity ? '∞' : spfResults?.distances[node.id]}
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse min-w-[500px]">
+                  <thead>
+                    <tr>
+                      <th className="p-3 text-left text-xs font-bold text-neutral-500 uppercase tracking-widest border-b border-white/5">Destination</th>
+                      <th className="p-3 text-left text-xs font-bold text-neutral-500 uppercase tracking-widest border-b border-white/5">OSPF Path</th>
+                      <th className="p-3 text-left text-xs font-bold text-neutral-500 uppercase tracking-widest border-b border-white/5 text-right">Total Cost</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {nodes.map(node => (
+                      <tr key={node.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                        <td className="p-3 text-sm text-white font-bold">{node.name}</td>
+                        <td className="p-3 text-xs font-medium text-neutral-400">
+                          {getPath(node.id)}
+                        </td>
+                        <td className="p-3 text-sm text-indigo-400 font-bold text-right">
+                          {spfResults?.distances[node.id] === Infinity ? '∞' : spfResults?.distances[node.id]}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </section>
         </div>
@@ -1073,31 +1088,37 @@ function LSDBModal({
   );
 }
 
-function Header({ theme, onToggleTheme, onBackToIntro }: { theme: 'night' | 'day'; onToggleTheme: () => void; onBackToIntro: () => void }) {
+function Header({ theme, onToggleTheme, onBackToIntro, onToggleSidebar }: { theme: 'night' | 'day'; onToggleTheme: () => void; onBackToIntro: () => void; onToggleSidebar: () => void }) {
   return (
-    <header className="fixed top-0 left-0 w-full z-40 px-6 py-8 flex justify-between items-center pointer-events-none">
-      <div className="flex items-center gap-3 pointer-events-auto">
-        <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
-          <Network className="text-white w-6 h-6" />
+    <header className="fixed top-0 left-0 w-full z-40 px-4 md:px-6 py-4 md:py-8 flex justify-between items-center pointer-events-none">
+      <div className="flex items-center gap-2 md:gap-3 pointer-events-auto">
+        <button 
+          onClick={onToggleSidebar}
+          className="lg:hidden p-2 bg-neutral-900/80 backdrop-blur-md border border-white/5 rounded-xl text-neutral-400 hover:text-white transition-colors"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+        <div className="w-8 h-8 md:w-10 md:h-10 bg-indigo-600 rounded-lg md:rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <Network className="text-white w-5 h-5 md:w-6 md:h-6" />
         </div>
-        <span className="font-display text-2xl font-bold tracking-tighter text-white">OSPF GLOBE</span>
+        <span className="font-display text-lg md:text-2xl font-bold tracking-tighter text-white">OSPF GLOBE</span>
       </div>
 
-      <div className="flex items-center gap-4 pointer-events-auto">
+      <div className="flex items-center gap-2 md:gap-4 pointer-events-auto">
         <button 
           onClick={onBackToIntro}
-          className="p-3 bg-neutral-900/80 backdrop-blur-md border border-white/5 rounded-xl text-neutral-400 hover:text-white transition-colors flex items-center gap-2"
+          className="p-2 md:p-3 bg-neutral-900/80 backdrop-blur-md border border-white/5 rounded-lg md:rounded-xl text-neutral-400 hover:text-white transition-colors flex items-center gap-2"
           title="Back to Introduction"
         >
-          <Info className="w-5 h-5" />
-          <span className="text-xs font-bold uppercase tracking-widest">Intro</span>
+          <Info className="w-4 h-4 md:w-5 md:h-5" />
+          <span className="hidden sm:inline text-[10px] md:text-xs font-bold uppercase tracking-widest">Intro</span>
         </button>
         <button 
           onClick={onToggleTheme}
-          className="p-3 bg-neutral-900/80 backdrop-blur-md border border-white/5 rounded-xl text-neutral-400 hover:text-white transition-colors flex items-center gap-2"
+          className="p-2 md:p-3 bg-neutral-900/80 backdrop-blur-md border border-white/5 rounded-lg md:rounded-xl text-neutral-400 hover:text-white transition-colors flex items-center gap-2"
         >
-          {theme === 'night' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-          <span className="text-xs font-bold uppercase tracking-widest">{theme === 'night' ? 'Night' : 'Day'}</span>
+          {theme === 'night' ? <Moon className="w-4 h-4 md:w-5 md:h-5" /> : <Sun className="w-4 h-4 md:w-5 md:h-5" />}
+          <span className="hidden sm:inline text-[10px] md:text-xs font-bold uppercase tracking-widest">{theme === 'night' ? 'Night' : 'Day'}</span>
         </button>
       </div>
     </header>
@@ -1123,12 +1144,12 @@ function LandingSection({ onEnter }: { onEnter: () => void }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="text-center max-w-4xl z-10"
+          className="text-center max-w-4xl z-10 px-4"
         >
-          <h1 className="text-6xl md:text-8xl font-display font-black text-white mb-8 tracking-tighter">
+          <h1 className="text-4xl sm:text-6xl md:text-8xl font-display font-black text-white mb-6 md:mb-8 tracking-tighter">
             OSPF <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-blue-400">Global</span> Visualizer
           </h1>
-          <p className="text-xl md:text-2xl text-neutral-400 mb-12 leading-relaxed font-light">
+          <p className="text-lg md:text-2xl text-neutral-400 mb-8 md:mb-12 leading-relaxed font-light">
             Experience the dynamics of Open Shortest Path First (OSPF) routing through a real-time, interactive 3D global topology simulation.
           </p>
         </motion.div>
@@ -1185,9 +1206,30 @@ function LandingSection({ onEnter }: { onEnter: () => void }) {
         </div>
       </section>
 
-      <section className="max-w-6xl mx-auto px-6 py-32 text-center">
-        <h2 className="text-4xl font-display font-bold text-white mb-8">Ready to Simulate?</h2>
-        <p className="text-xl text-neutral-400 mb-12 max-w-2xl mx-auto">
+      <section className="min-h-screen flex flex-col items-center justify-center px-6 py-32 text-center border-t border-white/5">
+        <div className="p-8 md:p-12 rounded-[40px] bg-indigo-600/5 border border-indigo-500/10 max-w-4xl mx-auto">
+          <div className="w-16 h-16 bg-indigo-500/20 rounded-2xl flex items-center justify-center text-indigo-400 mx-auto mb-6">
+            <Download className="w-8 h-8" />
+          </div>
+          <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-4">Cisco Packet Tracer Resource</h2>
+          <p className="text-lg text-neutral-400 mb-8 leading-relaxed">
+            Download the official Cisco Packet Tracer file demonstrating the OSPF protocol implementation. This resource provides a pre-configured environment to study link-state routing in depth.
+          </p>
+          <a 
+            href="https://drive.google.com/drive/u/0/folders/1h1qBGFDt31a_CDjCfTqA33TYRPPHApQX" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold transition-all shadow-xl shadow-indigo-600/20 group"
+          >
+            <span>Access Packet Tracer File</span>
+            <ExternalLink className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          </a>
+        </div>
+      </section>
+
+      <section className="min-h-screen flex flex-col items-center justify-center px-6 py-32 text-center border-t border-white/5">
+        <h2 className="text-4xl md:text-6xl font-display font-bold text-white mb-8 tracking-tighter">Ready to Simulate?</h2>
+        <p className="text-xl text-neutral-400 mb-12 max-w-2xl mx-auto font-light">
           Dive into the interactive environment. Place nodes, configure costs, and watch the OSPF protocol optimize your global network in real-time.
         </p>
         <button 
@@ -1222,6 +1264,7 @@ export default function App() {
   const [isPlacementMode, setIsPlacementMode] = useState(false);
   const [isCostTableOpen, setIsCostTableOpen] = useState(false);
   const [isLSDBOpen, setIsLSDBOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeRouterForPC, setActiveRouterForPC] = useState<string | null>(null);
   const [isSimulationModalOpen, setIsSimulationModalOpen] = useState(false);
   const [showLanding, setShowLanding] = useState(true);
@@ -1509,6 +1552,7 @@ export default function App() {
         theme={theme} 
         onToggleTheme={() => setTheme(theme === 'night' ? 'day' : 'night')} 
         onBackToIntro={() => setShowLanding(true)}
+        onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
       />
       <Sidebar 
         nodes={nodes} 
@@ -1518,6 +1562,8 @@ export default function App() {
         }}
         onManagePCs={(id) => setActiveRouterForPC(id)}
         onOpenCostTable={() => setIsCostTableOpen(true)}
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
       />
 
       <AnimatePresence>
@@ -1555,6 +1601,7 @@ export default function App() {
         )}
       </AnimatePresence>
 
+      {/* Tracert Output Panel */}
       <AnimatePresence>
         {simulation.isActive && (
           <TracertPanel 
@@ -1565,37 +1612,37 @@ export default function App() {
       </AnimatePresence>
 
       {/* Right Side Buttons */}
-      <div className="fixed right-6 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-4">
+      <div className="fixed right-4 md:right-6 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-2 md:gap-4">
         <motion.button 
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsLSDBOpen(true)}
-          className="px-6 py-4 bg-neutral-900/80 backdrop-blur-xl border border-white/10 rounded-2xl text-indigo-400 hover:text-white hover:bg-indigo-600 transition-all shadow-2xl group flex items-center gap-3"
+          className="p-3 md:px-6 md:py-4 bg-neutral-900/80 backdrop-blur-xl border border-white/10 rounded-xl md:rounded-2xl text-indigo-400 hover:text-white hover:bg-indigo-600 transition-all shadow-2xl group flex items-center gap-3"
         >
-          <Database className="w-6 h-6" />
-          <span className="text-sm font-bold uppercase tracking-widest">View LSDB</span>
+          <Database className="w-5 h-5 md:w-6 md:h-6" />
+          <span className="hidden md:inline text-sm font-bold uppercase tracking-widest">View LSDB</span>
         </motion.button>
 
         <motion.button 
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setShowLinks(!showLinks)}
-          className={`px-6 py-4 backdrop-blur-xl border border-white/10 rounded-2xl transition-all shadow-2xl group flex items-center gap-3 ${
+          className={`p-3 md:px-6 md:py-4 backdrop-blur-xl border border-white/10 rounded-xl md:rounded-2xl transition-all shadow-2xl group flex items-center gap-3 ${
             showLinks ? 'bg-indigo-600 text-white' : 'bg-neutral-900/80 text-indigo-400 hover:text-white hover:bg-indigo-600'
           }`}
         >
-          <Share2 className="w-6 h-6" />
-          <span className="text-sm font-bold uppercase tracking-widest">View Links</span>
+          <Share2 className="w-5 h-5 md:w-6 md:h-6" />
+          <span className="hidden md:inline text-sm font-bold uppercase tracking-widest">View Links</span>
         </motion.button>
 
         <motion.button 
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsSimulationModalOpen(true)}
-          className="px-6 py-4 bg-neutral-900/80 backdrop-blur-xl border border-white/10 rounded-2xl text-indigo-400 hover:text-white hover:bg-indigo-600 transition-all shadow-2xl group flex items-center gap-3"
+          className="p-3 md:px-6 md:py-4 bg-neutral-900/80 backdrop-blur-xl border border-white/10 rounded-xl md:rounded-2xl text-indigo-400 hover:text-white hover:bg-indigo-600 transition-all shadow-2xl group flex items-center gap-3"
         >
-          <Play className="w-6 h-6" />
-          <span className="text-sm font-bold uppercase tracking-widest">Simulation</span>
+          <Play className="w-5 h-5 md:w-6 md:h-6" />
+          <span className="hidden md:inline text-sm font-bold uppercase tracking-widest">Simulation</span>
         </motion.button>
       </div>
 
@@ -1603,20 +1650,20 @@ export default function App() {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30 px-6 py-3 bg-neutral-900/80 backdrop-blur-xl border border-white/10 rounded-full flex items-center gap-4 shadow-2xl"
+        className="fixed bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 z-30 px-4 md:px-6 py-2 md:py-3 bg-neutral-900/80 backdrop-blur-xl border border-white/10 rounded-2xl md:rounded-full flex flex-col md:flex-row items-center gap-2 md:gap-4 shadow-2xl w-[90%] md:w-auto"
       >
         <button 
           onClick={() => setIsPlacementMode(!isPlacementMode)}
-          className="flex items-center gap-2 text-xs font-medium text-neutral-400 hover:text-white transition-colors group"
+          className="flex items-center gap-2 text-[10px] md:text-xs font-medium text-neutral-400 hover:text-white transition-colors group w-full md:w-auto justify-center"
         >
-          <div className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors ${isPlacementMode ? 'bg-indigo-600 text-white' : 'bg-indigo-500/20 text-indigo-400 group-hover:bg-indigo-500/40'}`}>
+          <div className={`w-5 h-5 md:w-6 md:h-6 rounded-lg flex items-center justify-center transition-colors ${isPlacementMode ? 'bg-indigo-600 text-white' : 'bg-indigo-500/20 text-indigo-400 group-hover:bg-indigo-500/40'}`}>
             <Plus className="w-3 h-3" />
           </div>
           <span>{isPlacementMode ? 'Placement Active' : 'Enable Add Mode to Place'}</span>
         </button>
-        <div className="w-px h-4 bg-white/10" />
-        <div className="flex items-center gap-2 text-xs font-medium text-neutral-400">
-          <div className="w-6 h-6 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+        <div className="hidden md:block w-px h-4 bg-white/10" />
+        <div className="flex items-center gap-2 text-[10px] md:text-xs font-medium text-neutral-400 w-full md:w-auto justify-center">
+          <div className="w-5 h-5 md:w-6 md:h-6 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400">
             <MapIcon className="w-3 h-3" />
           </div>
           <span>Drag to Rotate</span>
