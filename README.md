@@ -1,20 +1,58 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# 🌍 OSPF Globe Explorer
 
-# Run and deploy your AI Studio app
+An interactive **3D network simulator** that visualizes the **OSPF (Open Shortest Path First)** routing protocol on a global scale.  
+Built with modern web technologies, this project combines **computer networking + real-time graphics + simulation** into a single immersive experience.
 
-This contains everything you need to run your app locally.
+---
 
-View your app in AI Studio: https://ai.studio/apps/44e530db-bcba-4951-bd7f-fbb8bd8170d1
+## 🚀 Features
 
-## Run Locally
+### 🌐 3D Global Network Visualization
+- Real-time **interactive Earth globe** using Three.js  
+- Place routers anywhere on the globe  
+- Smooth camera controls (rotate, zoom)  
 
-**Prerequisites:**  Node.js
+### 📡 OSPF Protocol Simulation
+- Full **Shortest Path First (SPF)** using Dijkstra’s Algorithm  
+- Dynamic routing based on configurable link costs  
+- Real-time packet traversal visualization  
 
+### 🧠 Link State Database (LSDB)
+- View all **Link State Advertisements (LSAs)**  
+- Inspect routing tables and shortest paths  
+- Understand how OSPF builds network topology  
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+### 💻 Router & PC Management
+- Add/remove routers dynamically  
+- Attach multiple PCs to routers  
+- Configure **individual link costs**  
+
+### ⚡ Simulation Engine
+- Simulate packet transfer between any two PCs  
+- Step-by-step **hop tracing (like tracert)**  
+- Live logs with total cost calculation  
+
+### 🎨 Modern UI/UX
+- Glassmorphism UI with smooth animations  
+- Dark/Light (Night/Day) modes  
+- Fully responsive (mobile + desktop)  
+
+---
+
+## 🛠️ Tech Stack
+
+- ⚛️ React + Vite  
+- 🎮 Three.js + React Three Fiber  
+- 🎨 TailwindCSS  
+- 🎬 Framer Motion  
+- 🧠 Custom OSPF Simulation Logic  
+
+---
+
+## ⚙️ Installation
+
+```bash
+git clone https://github.com/your-username/ospf-globe-explorer.git
+cd ospf-globe-explorer
+npm install
+npm run dev
