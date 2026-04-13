@@ -1,5 +1,5 @@
 {
-  "name": "OSPF Globe Explorer",
+  "name": "OSPF Global Explorer",
   "description": "A 3D interactive globe for visualizing OSPF network protocols and router nodes.",
   "requestFramePermissions": []
 }

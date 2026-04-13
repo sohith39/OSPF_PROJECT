@@ -1147,7 +1147,7 @@ function LandingSection({ onEnter }: { onEnter: () => void }) {
           className="text-center max-w-4xl z-10 px-4"
         >
           <h1 className="text-4xl sm:text-6xl md:text-8xl font-display font-black text-white mb-6 md:mb-8 tracking-tighter">
-            OSPF <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-blue-400">Global</span> Visualizer
+            OSPF <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-blue-400">Global</span> Explorer
           </h1>
           <p className="text-lg md:text-2xl text-neutral-400 mb-8 md:mb-12 leading-relaxed font-light">
             Experience the dynamics of Open Shortest Path First (OSPF) routing through a real-time, interactive 3D global topology simulation.

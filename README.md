@@ -1,4 +1,4 @@
-# 🌍 OSPF Globe Explorer
+# 🌍 OSPF Global Explorer
 
 An interactive **3D network simulator** that visualizes the **OSPF (Open Shortest Path First)** routing protocol on a global scale.  
 Built with modern web technologies, this project combines **computer networking + real-time graphics + simulation** into a single immersive experience.
